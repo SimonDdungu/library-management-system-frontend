@@ -8,8 +8,19 @@ import {
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from '@/components/ui/pagination'
 
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -180,7 +191,7 @@ export default function BookTable() {
     useEffect(() => {
         const fetchBooks = async() => {
             const res = await axios.get(`${api}/books`)
-            setBooks(res.data.data.data)
+            setBooks(res.data.data.books)
             setResults(res.data.data.totalRecords)
             setTotalPages(res.data.data.totalPages)
         }
@@ -190,11 +201,12 @@ export default function BookTable() {
 
 
     const table = useReactTable({
-        data: books,
+        data: books || [],
         columns,
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
         state: {
         sorting,
         },
@@ -202,19 +214,19 @@ export default function BookTable() {
 
 
     const NextPage = async() => {
-        console.log("Fetching next page")
-        const nextPage = currentPage + 1;  // compute next page
-        setCurrentPage(nextPage);
-        const res = await axios.get(`${api}/books?page=${nextPage}`)
-        setBooks(res.data.data.data)
+      const nextPage = currentPage + 1; 
+      setCurrentPage(nextPage);
+      const res = await axios.get(`${api}/books?page=${nextPage}`)
+      console.log("Fetching next page: ", res)
+      setBooks(res.data.data.books)
     }
 
     const PrevPage = async() => {
         console.log("Fetching next page")
-        const prevPage = currentPage - 1;  // compute next page
+        const prevPage = currentPage - 1;
         setCurrentPage(prevPage);
         const res = await axios.get(`${api}/books?page=${prevPage}`)
-        setBooks(res.data.data.data)
+        setBooks(res.data.data.books)
     }
 
   return (
@@ -226,7 +238,7 @@ export default function BookTable() {
                 <h3>Page: {currentPage}</h3>
             </div>
         </div>
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-hidden rounded-md border mb-10">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -275,14 +287,15 @@ export default function BookTable() {
             )}
           </TableBody>
         </Table>
+
       </div>
 
       <div className="mt-5 flex flex-row justify-between">
         <div className="flex flex-row gap-x-5">
-            <button className="px-5 py-2 rounded-2xl border disabled:opacity-50 disabled:cursor-not-allowed" onClick={PrevPage} disabled={currentPage <= 1}>
+            <button className="cursor-pointer px-5 py-2 rounded-2xl border disabled:opacity-50 disabled:cursor-not-allowed" onClick={PrevPage} disabled={currentPage <= 1}>
                 Prev Page
             </button>
-            <button className="px-5 py-2 rounded-2xl border disabled:opacity-50 disabled:cursor-not-allowed " onClick={NextPage} disabled={currentPage >= totalPages}>
+            <button className="cursor-pointer px-5 py-2 rounded-2xl border disabled:opacity-50 disabled:cursor-not-allowed " onClick={NextPage} disabled={currentPage >= totalPages}>
                 Next Page
             </button>
         </div>

@@ -1,8 +1,8 @@
-import BookTable from "@/components/Table/BookTable";
+import Dashboard from "@/components/Home/Dashboard";
 import Image from "next/image";
 
 export default function Home() {
   return (
-   <BookTable />
+   <Dashboard />
   );
 }

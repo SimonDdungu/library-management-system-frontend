@@ -8,6 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@primeuix/themes": "^1.2.5",
+    "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.3",
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.12.2",
@@ -16,9 +18,12 @@
     "formik": "^2.4.6",
     "lucide-react": "^0.545.0",
     "next": "15.5.5",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.9.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "^3.3.1",
+    "tailwindcss-primeui": "^0.6.1",
     "yup": "^1.7.1"
   },
   "devDependencies": {
