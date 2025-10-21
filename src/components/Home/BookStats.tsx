@@ -1,6 +1,6 @@
 import React from 'react'
 import BookDashboardCard from './BookDashboardCard'
-import Book from "@/assets/svgs/Book.svg"
+import { images } from '@/constants/Book_Icons';
 
 interface Results{
     results: string;
@@ -9,9 +9,9 @@ interface Results{
 const BookStats = ({results, copies}: Results) => {
   return (
     <div className='flex flex-row justify-between items-center'>
-        <BookDashboardCard  image={Book} heading='Total Book Copies' results={copies}/>
-        <BookDashboardCard  image={Book} heading='Total Books' results={results}/>
-        <BookDashboardCard  image={Book} heading='Total Books' results={results}/>
+        <BookDashboardCard  image={images.Book} heading='Total Books' results={results}/>
+        <BookDashboardCard  image={images.Library} heading='Total Book Copies' results={copies}/>
+        <BookDashboardCard  image={images.Book} heading='Available Copies' results={copies}/>
     </div>
   )
 }
