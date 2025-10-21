@@ -5,84 +5,69 @@ import { config } from '@/config/env';
 import { InputNumber } from 'primereact/inputnumber';
 
 interface SearchBookQuery {
-    setData: (books: any[]) => void;
-    initialData: any[];
+    handleSearchChange: (searchTerm: string | null) => void
     setLoading: (loading: boolean) => void;
 }
 
-const SearchBooks = ({setData, initialData, setLoading}: SearchBookQuery) => {
+const SearchBooks = ({handleSearchChange, setLoading}: SearchBookQuery) => {
     const [title, setTitle] = useState<string>('');
     const [author, setAuthor] = useState<string>('');
     const [year, setYear] = useState<number | null>();
 
-    const api = config.api
-    
-
-   useEffect(() => {
-        if (!title){
-            setData(initialData)
-            return  
+    useEffect(() => {
+        if (!title) {
+            handleSearchChange(null);
+            return;
         }
-        const getTitle = setTimeout(async () => {
-            setLoading(true)
-            try {
-                const res = await axios.get(`${api}/books/search/title?title=${title}`);
-                setData(res.data.data.books);
-                setLoading(false)
-            } catch (err) {
-                setLoading(false)
-                console.error(err);
-            }
+        
+        const getTitle = setTimeout(() => {
+            setAuthor('')
+            setYear(null)
+            const searchPath = `/books/search/title?title=${title}`;
+            handleSearchChange(searchPath);
         }, 300);
 
         return () => clearTimeout(getTitle);
-    }, [title]);
+    }, [title, handleSearchChange]); 
 
     useEffect(() => {
-        if (!author){
-            setData(initialData)
-            return  
+        if (!author) {
+            handleSearchChange(null);
+            return;
         }; 
-        const getAuthor = setTimeout(async () => {
-            setLoading(true)
-            try {
-                const res = await axios.get(`${api}/books/search/author?author=${author}`);
-                setData(res.data.data.Authors);
-                setLoading(false)
-            } catch (err) {
-                setLoading(false)
-                console.error(err);
-            }
+        
+        const getAuthor = setTimeout(() => {
+            setTitle('')
+            setYear(null)
+            const searchPath = `/books/search/author?author=${author}`;
+            handleSearchChange(searchPath);
         }, 300);
 
         return () => clearTimeout(getAuthor);
-    }, [author]);
+    }, [author, handleSearchChange]);
 
     useEffect(() => {
-        if (!year){
-            setData(initialData)
-            return  
-        } 
-        const getYear = setTimeout(async () => {
-            setLoading(true)
-            try {
-                const res = await axios.get(`${api}/books/search/year?year=${year}`);
-                setData(res.data.data.Years);
-                setLoading(false)
-            } catch (err) {
-                setLoading(false)
-                console.error(err);
-            }
+        if (!year) {
+            handleSearchChange(null);
+            return;
+        }
+        
+        const getYear = setTimeout(() => {
+            setAuthor('')
+            setTitle('')
+            const searchPath = `/books/search/year?year=${year}`;
+            handleSearchChange(searchPath);
         }, 300);
 
         return () => clearTimeout(getYear);
-    }, [year]);
+    }, [year, handleSearchChange]);
+
 
   return (
     <div className="card flex gap-x-10 mb-5">
             <InputText value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter Title of Book'/>
             <InputText value={author} onChange={(e) => setAuthor(e.target.value)} placeholder='Enter name of Author'/>
-            <InputNumber value={year} onValueChange={(e) => setYear(e.value)} placeholder='Enter Year of the book' useGrouping={false}/>
+            <InputNumber value={year} onChange={(e) => setYear(e.value)} placeholder='Enter Year of the book' useGrouping={false}/>
     </div>
   )
 }

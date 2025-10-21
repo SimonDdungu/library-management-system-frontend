@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { DataTable } from 'primereact/datatable';
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
@@ -21,13 +21,16 @@ export interface BookAttributes {
 export default function BookTable2() {
     const [books, setBooks] = useState<BookAttributes[]>([])
     const [homeBooks, setHomeBooks] = useState<BookAttributes[]>([])
-    const [totalresults, setResults] = useState<number>(0)
+    const [totalBooks, setTotalBooks] = useState<number>(0)
+    const [totalResults, setTotalResults] = useState<number>(0)
     const [totalcopies, setTotalCopies] = useState<number>(0)
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [totalPages, setTotalPages] = useState<number>(1)
     const [loading, setLoading] = useState<boolean>(false)
      const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchQueryPath, setSearchQueryPath] = useState<string | null>(null);
 
     const onPageChange = (event: PaginatorPageChangeEvent) => {
         setFirst(event.first);
@@ -36,56 +39,84 @@ export default function BookTable2() {
 
     const api = process.env.NEXT_PUBLIC_BACKEND_API
 
-    useEffect(() => {
-        const fetchBooks = async() => {
-            try{
-                setLoading(true)
-                const res = await axios.get(`${api}/books`)
-                setBooks(res.data.data.books)
-                setHomeBooks(res.data.data.books)
-                setResults(res.data.data.totalRecords)
-                setTotalCopies(res.data.data.totalCopies)
-                setTotalPages(res.data.data.totalPages)
-                setLoading(false)
-            }catch(error){
-                setLoading(false)
-                console.error(error)
+    const fetchBooks = useCallback(async (pageNumber: number, searchPath: string | null) => {
+        setLoading(true);
+        try {
+            const basePath = searchPath || '/books';
+            
+            // If searchPath already contains '?', use '&' for page, otherwise use '?'
+            const connector = searchPath && searchPath.includes('?') ? '&' : '?';
+            
+            const url = `${api}${basePath}${connector}page=${pageNumber}`;
+            
+            const res = await axios.get(url);
+
+            setBooks(res.data.data.books || res.data.data.Authors || res.data.data.Years); 
+
+            if(basePath == '/books'){
+                setTotalCopies(res.data.data.totalCopies);
+                setTotalBooks(res.data.data.totalRecords);
             }
+            
+            setTotalResults(res.data.data.totalRecords)
+            setTotalPages(res.data.data.totalPages);
 
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
+    }, []);
 
-        fetchBooks()
-    }, [])
+   const handleSearchChange = useCallback((newSearchPath: string | null) => {
+    setFirst(0); 
+    setSearchQueryPath(newSearchPath);
+}, []);
+
+    // useEffect(() => {
+    //     const fetchBooks = async() => {
+    //         try{
+    //             setLoading(true)
+    //             const res = await axios.get(`${api}/books`)
+    //             setBooks(res.data.data.books)
+    //             setHomeBooks(res.data.data.books)
+    //             setResults(res.data.data.totalRecords)
+    //             setTotalCopies(res.data.data.totalCopies)
+    //             setTotalPages(res.data.data.totalPages)
+    //             setLoading(false)
+    //         }catch(error){
+    //             setLoading(false)
+    //             console.error(error)
+    //         }
+
+    //     }
+
+    //     fetchBooks()
+    // }, [])
 
     useEffect(() => {
-        const fetchNewData = async() => {
-            try{
-                setLoading(true)
-                const pageNumber = (first / rows) + 1;
-                setCurrentPage(pageNumber)
-                const res = await axios.get(`${api}/books?page=${pageNumber}`)
-                console.log(`${api}/books?page=${pageNumber}`)
-                setBooks(res.data.data.books)
-                setHomeBooks(res.data.data.books)
-                setLoading(false)
-            }catch(error){
-                setLoading(false)
-                console.error(error)
-            }
-        }
+        fetchBooks(1, null);
+    }, [fetchBooks]);
 
-        fetchNewData()
-    }, [first])
+    useEffect(() => {
+        const pageNumber = (first / rows) + 1;
+        setCurrentPage(pageNumber);
+
+        fetchBooks(pageNumber, searchQueryPath);
+        
+    }, [first, searchQueryPath, rows, fetchBooks]);
+
 
     return (
         <div className="w-full p-6">
 
             <div className="mb-10">
-                <BookStats results={String(totalresults)} copies={String(totalcopies)}/>
+                <BookStats results={String(totalBooks)} copies={String(totalcopies)}/>
             </div>
 
             <div>
-                <SearchBooks setData={setBooks} initialData={homeBooks} setLoading={setLoading}/>
+                <p className='mb-3'>Results: {totalResults}</p>
+                <SearchBooks handleSearchChange={handleSearchChange} setLoading={setLoading}/>
             </div>
 
 
@@ -99,7 +130,7 @@ export default function BookTable2() {
                     <Column field="updatedAt" header="Updated At" sortable style={{ width: '25%' }}></Column>
                 </DataTable>
                 <div className='mt-5'>
-                    <Paginator first={first} rows={rows} totalRecords={totalresults} onPageChange={onPageChange} />
+                    <Paginator first={first} rows={rows} totalRecords={totalResults} onPageChange={onPageChange} />
                 </div>
             </div>
 
