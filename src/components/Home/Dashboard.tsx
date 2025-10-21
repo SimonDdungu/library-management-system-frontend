@@ -5,7 +5,7 @@ import BookTable from '../Table/BookTable'
 
 const Dashboard = () => {
   return (
-    <div className='py-20 px-6'>
+    <div className='py-16 px-4'>
         <BookTable2 />
     </div>
   )

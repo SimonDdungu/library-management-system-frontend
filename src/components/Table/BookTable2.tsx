@@ -115,13 +115,13 @@ export default function BookTable2() {
             </div>
 
             <div>
-                <p className='mb-3'>Results: {totalResults}</p>
+                <p className='text-sm mb-3'>Results: {totalResults}</p>
                 <SearchBooks handleSearchChange={handleSearchChange} setLoading={setLoading}/>
             </div>
 
 
             <div className="card">
-                <DataTable value={books} rows={10} sortField="createdAt" sortOrder={-1}  loading={loading}  showGridlines tableStyle={{ minWidth: '50rem' }}>
+                <DataTable value={books} rows={10} sortField="createdAt" sortOrder={-1}  loading={loading}  showGridlines tableStyle={{ minWidth: '50rem', fontSize: '0.75rem' }}>
                     <Column field="id" header="ID" sortable style={{ width: '25%' }}></Column>
                     <Column field="title" header="Book Title" sortable style={{ width: '25%' }}></Column>
                     <Column field="author" header="Author" sortable style={{ width: '25%' }}></Column>

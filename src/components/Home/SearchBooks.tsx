@@ -65,9 +65,9 @@ const SearchBooks = ({handleSearchChange, setLoading}: SearchBookQuery) => {
 
   return (
     <div className="card flex gap-x-10 mb-5">
-            <InputText value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter Title of Book'/>
-            <InputText value={author} onChange={(e) => setAuthor(e.target.value)} placeholder='Enter name of Author'/>
-            <InputNumber value={year} onChange={(e) => setYear(e.value)} placeholder='Enter Year of the book' useGrouping={false}/>
+            <InputText value={title} className="p-inputtext-sm" onChange={(e) => setTitle(e.target.value)} placeholder='Enter Title of Book'/>
+            <InputText value={author} className="p-inputtext-sm" onChange={(e) => setAuthor(e.target.value)} placeholder='Enter name of Author'/>
+            <InputNumber value={year} className="p-inputtext-sm" onChange={(e) => setYear(e.value)} placeholder='Enter Year of the book' useGrouping={false}/>
     </div>
   )
 }
