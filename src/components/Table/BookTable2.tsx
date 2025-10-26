@@ -6,17 +6,13 @@ import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import { Column } from 'primereact/column';
 import BookStats from '../Home/BookStats';
 import SearchBooks from '../Home/SearchBooks';
+import { BookAttributes } from '@/interfaces';
 import { config } from '@/config/env';
+import AddBook from '../Home/AddBook';
+import LoadingSpinners from '../Global/LoadingSpinner';
 
 
-export interface BookAttributes {
-  id: string
-  title: string
-  author: string
-  published_year: number
-  createdAt: Date
-  updatedAt: Date
-}
+
 
 export default function BookTable2() {
     const [books, setBooks] = useState<BookAttributes[]>([])
@@ -39,7 +35,7 @@ export default function BookTable2() {
 
     const api = process.env.NEXT_PUBLIC_BACKEND_API
 
-    const fetchBooks = useCallback(async (pageNumber: number, searchPath: string | null) => {
+    const fetchBooks = useCallback(async (pageNumber: number = 1, searchPath: string | null = null) => {
         setLoading(true);
         try {
             const basePath = searchPath || '/books';
@@ -53,7 +49,7 @@ export default function BookTable2() {
 
             setBooks(res.data.data.books || res.data.data.Authors || res.data.data.Years); 
 
-            if(basePath == '/books'){
+            if(basePath === '/books'){
                 setTotalCopies(res.data.data.totalCopies);
                 setTotalBooks(res.data.data.totalRecords);
             }
@@ -114,9 +110,12 @@ export default function BookTable2() {
                 <BookStats results={String(totalBooks)} copies={String(totalcopies)}/>
             </div>
 
-            <div>
+            <div className='mb-5'>
                 <p className='text-sm mb-3'>Results: {totalResults}</p>
-                <SearchBooks handleSearchChange={handleSearchChange} setLoading={setLoading}/>
+                <div className='flex flex-row justify-between items-center'>
+                    <SearchBooks handleSearchChange={handleSearchChange} setLoading={setLoading}/>
+                    <AddBook triggerRefetch={fetchBooks}/>
+                </div>
             </div>
 
 
