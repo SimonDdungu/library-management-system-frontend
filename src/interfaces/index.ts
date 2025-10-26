@@ -22,8 +22,8 @@ export interface BookAttributes {
 }
 
 export const BookinitialValues = {
-  title: "The Matrix",
-  author: "Neil",
-  published_year: "2025",
-  isbn: "ISBN783438",
+  title: "",
+  author: "",
+  published_year: "",
+  isbn: "",
 } as BookAttributes
