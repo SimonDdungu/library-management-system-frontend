@@ -7,6 +7,13 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 
 
+@theme {
+  --breakpoint-xs: 30rem;
+  --breakpoint-2xl: 100rem;
+  --breakpoint-3xl: 120rem;
+}
+
+
 :root {
     --primary-green: #047857;
     --secondary-green: #f0fdfa;
