@@ -7,7 +7,7 @@ import { Column } from 'primereact/column';
 import BookStats from '../Home/BookStats';
 import SearchBooks from '../Home/SearchBooks';
 import { BookAttributes } from '@/interfaces';
-import { config } from '@/config/env';
+import ActionButton from './BookTable/ActionButton';
 import AddBook from '../Home/AddBook';
 import LoadingSpinners from '../Global/LoadingSpinner';
 
@@ -104,7 +104,7 @@ export default function BookTable2() {
 
 
     return (
-        <div className="w-full p-6">
+        <div className="w-full p-6 pt-2">
 
             <div className="mb-10">
                 <BookStats results={String(totalBooks)} copies={String(totalcopies)}/>
@@ -120,13 +120,14 @@ export default function BookTable2() {
 
 
             <div className="card">
-                <DataTable value={books} rows={10} sortField="createdAt" sortOrder={-1}  loading={loading}  showGridlines tableStyle={{ minWidth: '50rem', fontSize: '0.75rem' }}>
+                <DataTable value={books} rows={10} sortField="createdAt" sortOrder={-1}  loading={loading} removableSort  showGridlines tableStyle={{ minWidth: '50rem', fontSize: '0.75rem' }}>
                     <Column field="id" header="ID" sortable style={{ width: '25%' }}></Column>
                     <Column field="title" header="Book Title" sortable style={{ width: '25%' }}></Column>
                     <Column field="author" header="Author" sortable style={{ width: '25%' }}></Column>
                     <Column field="published_year" header="Published Year" sortable style={{ width: '25%' }}></Column>
                     <Column field="createdAt" header="Created At" sortable style={{ width: '25%' }}></Column>
                     <Column field="updatedAt" header="Updated At" sortable style={{ width: '25%' }}></Column>
+                    <Column body={(rowData, options) => (<ActionButton  rowIndex={options.rowIndex} rowData={rowData}/> )} header="Actions" style={{ width: '5%' }} />
                 </DataTable>
                 <div className='mt-5'>
                     <Paginator first={first} rows={rows} totalRecords={totalResults} onPageChange={onPageChange} />

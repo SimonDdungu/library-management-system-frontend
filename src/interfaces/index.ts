@@ -27,3 +27,10 @@ export const BookinitialValues = {
   published_year: "",
   isbn: "",
 } as BookAttributes
+
+
+export interface EditBooks {
+  setResults: (bookData: any) => void,
+  rowIndex: number,
+  rowData: any
+}

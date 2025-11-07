@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Dialog } from 'primereact/dialog';
 import { Formik, Form, FormikHelpers } from "formik"
-import AddBookValidation from "./AddBookValidation"
+import {AddBookValidation} from "@/validations/index"
 import { InputField, InputNumericField } from "../forms"
 import { BookinitialValues } from "@/interfaces"
 import { BookAttributes } from '@/interfaces';
